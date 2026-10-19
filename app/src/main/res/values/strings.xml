@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">בנק מחשבות</string>
+
+    <string name="search_hint">חיפוש במחשבות…</string>
+    <string name="empty_list">עוד אין כאן מחשבות.\nלחץ על + כדי להוסיף את הראשונה.</string>
+    <string name="add_desc">הוסף מחשבה</string>
+    <string name="item_reminder_upcoming">🔔 %1$s</string>
+    <string name="item_reminder_done">✓ הוזכר %1$s</string>
+
+    <string name="new_thought">מחשבה חדשה</string>
+    <string name="edit_thought">מחשבה</string>
+    <string name="thought_hint">מה עובר לך בראש?</string>
+
+    <string name="reminder_none">ללא תזכורת</string>
+    <string name="reminder_at">🔔 תזכורת: %1$s</string>
+    <string name="reminder_passed">התזכורת כבר הייתה (%1$s)</string>
+    <string name="in_hour">בעוד שעה</string>
+    <string name="tonight">הערב 20:00</string>
+    <string name="tomorrow_morning">מחר 09:00</string>
+    <string name="pick_time">בחר תאריך ושעה</string>
+    <string name="clear_reminder">הסר תזכורת</string>
+
+    <string name="save">שמור</string>
+    <string name="delete">מחק</string>
+    <string name="cancel">ביטול</string>
+    <string name="delete_confirm">למחוק את המחשבה?</string>
+    <string name="empty_thought">המחשבה ריקה</string>
+    <string name="time_passed">הזמן שבחרת כבר עבר</string>
+    <string name="saved">נשמר</string>
+    <string name="exact_alarm_off">התזכורת נשמרה, אבל ייתכן שתגיע באיחור קל (תזכורות מדויקות כבויות בהגדרות)</string>
+
+    <string name="channel_name">תזכורות</string>
+    <string name="notification_title">תזכורת מבנק המחשבות</string>
+</resources>
