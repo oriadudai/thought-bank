@@ -24,14 +24,25 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.net.Uri;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /** Main screen: category tabs, search, list of thoughts, "add" button. */
 public class MainActivity extends Activity {
 
     private static final String STATE_FILTER = "filter";
+    private static final int REQ_EXPORT = 10;
+    private static final int REQ_IMPORT = 11;
 
     private ThoughtDb db;
     private ThoughtAdapter adapter;
@@ -144,11 +155,87 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_stream) {
+        int id = item.getItemId();
+        if (id == R.id.menu_stream) {
             showStreamSettings();
             return true;
         }
+        if (id == R.id.menu_export) {
+            String name = "thought-bank-"
+                    + new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()) + ".csv";
+            Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT)
+                    .addCategory(Intent.CATEGORY_OPENABLE)
+                    .setType("text/csv")
+                    .putExtra(Intent.EXTRA_TITLE, name);
+            startActivityForResult(i, REQ_EXPORT);
+            return true;
+        }
+        if (id == R.id.menu_import) {
+            Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT)
+                    .addCategory(Intent.CATEGORY_OPENABLE)
+                    .setType("*/*")
+                    .putExtra(Intent.EXTRA_MIME_TYPES, new String[]{
+                            "text/csv", "text/comma-separated-values", "text/plain",
+                            "application/csv", "application/vnd.ms-excel"});
+            startActivityForResult(i, REQ_IMPORT);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    // ---------- CSV backup ----------
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK || data == null || data.getData() == null) return;
+        if (requestCode == REQ_EXPORT) exportTo(data.getData());
+        else if (requestCode == REQ_IMPORT) importFrom(data.getData());
+    }
+
+    private void exportTo(Uri uri) {
+        try (OutputStream out = getContentResolver().openOutputStream(uri)) {
+            if (out == null) throw new IOException("No output stream");
+            List<Thought> all = db.getAll(null, -1);
+            CsvBackup.write(all, out);
+            toast(getString(R.string.export_done, all.size()));
+        } catch (Exception e) {
+            toast(getString(R.string.export_failed));
+        }
+    }
+
+    /** Adds thoughts from the file. Ones that already exist (same text + creation time) are skipped. */
+    private void importFrom(Uri uri) {
+        List<Thought> incoming;
+        try (InputStream in = getContentResolver().openInputStream(uri)) {
+            if (in == null) throw new IOException("No input stream");
+            incoming = CsvBackup.read(in);
+        } catch (Exception e) {
+            toast(getString(R.string.import_failed));
+            return;
+        }
+
+        Set<String> existing = new HashSet<>();
+        for (Thought t : db.getAll(null, -1)) existing.add(dedupeKey(t));
+        int added = 0;
+        int skipped = 0;
+        for (Thought t : incoming) {
+            if (existing.add(dedupeKey(t))) {
+                t.id = db.insert(t);
+                added++;
+            } else {
+                skipped++;
+            }
+        }
+        BootReceiver.rescheduleAll(this);
+        reload();
+        toast(skipped == 0
+                ? getString(R.string.import_done, added)
+                : getString(R.string.import_done_skipped, added, skipped));
+    }
+
+    private static String dedupeKey(Thought t) {
+        return (t.created / 1000) + "|" + t.text.trim();
     }
 
     private void showStreamSettings() {
@@ -192,6 +279,10 @@ public class MainActivity extends Activity {
 
     private void toast(int resId) {
         Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
+    }
+
+    private void toast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     // ---------- list ----------

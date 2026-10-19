@@ -75,4 +75,13 @@
     <string name="stream_to">עד שעה</string>
     <string name="stream_avg">בערך כל (שעות)</string>
     <string name="stream_bad_range">שעת הסיום צריכה להיות אחרי שעת ההתחלה</string>
+
+    <!-- Backup -->
+    <string name="menu_export">ייצוא ל-CSV</string>
+    <string name="menu_import">ייבוא מ-CSV</string>
+    <string name="export_done">יוצאו %1$d מחשבות</string>
+    <string name="export_failed">הייצוא נכשל</string>
+    <string name="import_done">יובאו %1$d מחשבות</string>
+    <string name="import_done_skipped">יובאו %1$d מחשבות (%2$d כבר היו קיימות)</string>
+    <string name="import_failed">לא הצלחתי לקרוא את הקובץ. צריך קובץ CSV עם עמודה בשם text.</string>
 </resources>
