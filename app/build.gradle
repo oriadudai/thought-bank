@@ -2,6 +2,9 @@ plugins {
     id 'com.android.application'
 }
 
+// Set by GitHub Actions (run number); local builds fall back to 1.
+def buildNumber = (System.getenv("VERSION_CODE") ?: "1").toInteger()
+
 android {
     namespace 'com.dudai.thoughtbank'
     compileSdk 35
@@ -10,13 +13,28 @@ android {
         applicationId "com.dudai.thoughtbank"
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode buildNumber
+        versionName "1.0.${buildNumber}"
+    }
+
+    // Fixed signing key: every build is signed the same way,
+    // so a new APK installs over the old one and keeps your data.
+    signingConfigs {
+        stable {
+            storeFile file("thoughtbank.keystore")
+            storePassword "x1CljXTMKwX2f7LBwUAr3nuO"
+            keyAlias "thoughtbank"
+            keyPassword "x1CljXTMKwX2f7LBwUAr3nuO"
+        }
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.stable
+        }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.stable
         }
     }
 

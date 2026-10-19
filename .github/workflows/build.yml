@@ -24,16 +24,18 @@ jobs:
         with:
           gradle-version: "8.9"
 
-      - name: Build debug APK
+      - name: Build release APK
+        env:
+          VERSION_CODE: ${{ github.run_number }}
         run: |
-          gradle assembleDebug --stacktrace
-          cp app/build/outputs/apk/debug/app-debug.apk ThoughtBank.apk
+          gradle assembleRelease --stacktrace
+          cp app/build/outputs/apk/release/app-release.apk ThoughtBank.apk
 
-      # Publishes the APK so it can be downloaded directly on the phone:
+      # Publishes the APK so it can be downloaded directly on the phone, or tracked by Obtainium:
       # https://github.com/<owner>/<repo>/releases/latest/download/ThoughtBank.apk
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}
-          name: בנק מחשבות – build ${{ github.run_number }}
+          tag_name: v1.0.${{ github.run_number }}
+          name: בנק מחשבות 1.0.${{ github.run_number }}
           files: ThoughtBank.apk
           make_latest: true
