@@ -9,4 +9,7 @@
     <color name="primary_dark">#312E81</color>
     <color name="icon_bg">#4F46E5</color>
     <color name="white">#FFFFFF</color>
+    <color name="chip_stroke">#D6D3CC</color>
+    <color name="cat_insight">#7C3AED</color>
+    <color name="cat_idea">#0E9F6E</color>
 </resources>

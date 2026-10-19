@@ -1,50 +1,62 @@
 package com.dudai.thoughtbank;
 
-import android.Manifest;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 
-/** Fired by AlarmManager at reminder time: shows the thought as a notification. */
+/** Handles all alarms and notification buttons. */
 public class ReminderReceiver extends BroadcastReceiver {
+
+    static final String ACTION_REMIND = "com.dudai.thoughtbank.REMIND";
+    static final String ACTION_SNOOZE = "com.dudai.thoughtbank.SNOOZE";
+    static final String ACTION_STOP = "com.dudai.thoughtbank.STOP";
+    static final String ACTION_INSIGHT = "com.dudai.thoughtbank.INSIGHT";
+
+    private static final long HOUR = 60 * 60 * 1000L;
 
     @Override
     public void onReceive(Context ctx, Intent intent) {
-        long id = intent.getLongExtra(ReminderScheduler.EXTRA_ID, 0);
-        Thought t = ThoughtDb.get(ctx).get(id);
-        if (t == null) return; // deleted in the meantime
+        String action = intent.getAction();
+        if (action == null) action = ACTION_REMIND;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                && ctx.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ACTION_INSIGHT.equals(action)) {
+            InsightStream.fire(ctx);
             return;
         }
 
-        Notifications.ensureChannel(ctx);
+        long id = intent.getLongExtra(ReminderScheduler.EXTRA_ID, 0);
+        ThoughtDb db = ThoughtDb.get(ctx);
+        Thought t = db.get(id);
+        NotificationManager nm = ctx.getSystemService(NotificationManager.class);
+        long now = System.currentTimeMillis();
 
-        // Tapping the notification opens the thought (with the main list behind it)
-        Intent open = new Intent(ctx, EditActivity.class).putExtra(EditActivity.EXTRA_ID, id);
-        PendingIntent contentIntent = TaskStackBuilder.create(ctx)
-                .addNextIntentWithParentStack(open)
-                .getPendingIntent((int) id,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        switch (action) {
+            case ACTION_SNOOZE:
+                nm.cancel((int) id);
+                if (t != null) ReminderScheduler.snooze(ctx, id, now + HOUR);
+                break;
 
-        Notification n = new Notification.Builder(ctx, Notifications.CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(ctx.getString(R.string.notification_title))
-                .setContentText(t.text)
-                .setStyle(new Notification.BigTextStyle().bigText(t.text))
-                .setCategory(Notification.CATEGORY_REMINDER)
-                .setContentIntent(contentIntent)
-                .setAutoCancel(true)
-                .build();
+            case ACTION_STOP:
+                nm.cancel((int) id);
+                if (t != null) {
+                    ReminderScheduler.cancel(ctx, id);
+                    t.repeat = Recurrence.NONE;
+                    t.remindAt = 0;
+                    db.update(t);
+                }
+                break;
 
-        ctx.getSystemService(NotificationManager.class).notify((int) id, n);
+            default: // ACTION_REMIND
+                if (t == null) return;
+                boolean snooze = intent.getBooleanExtra(ReminderScheduler.EXTRA_SNOOZE, false);
+                if (!snooze && t.repeat != Recurrence.NONE) {
+                    t.remindAt = Recurrence.next(t.remindAt, t.repeat, t.repeatDays, now);
+                    db.update(t);
+                    ReminderScheduler.schedule(ctx, t);
+                }
+                Notifications.showReminder(ctx, t);
+                break;
+        }
     }
 }

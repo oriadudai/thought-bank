@@ -28,10 +28,18 @@ jobs:
         env:
           VERSION_CODE: ${{ github.run_number }}
         run: |
-          gradle assembleRelease --stacktrace
+          set -o pipefail
+          gradle assembleRelease 2>&1 | tee build.log
           cp app/build/outputs/apk/release/app-release.apk ThoughtBank.apk
 
-      # Publishes the APK so it can be downloaded directly on the phone, or tracked by Obtainium:
+      # Surfaces compiler errors as an annotation, readable without the full log
+      - name: Report build errors
+        if: failure()
+        run: |
+          msg=$(grep -E "error:|ERROR:|What went wrong|e: " -A4 build.log | head -80 | sed -e 's/%/%25/g' -e 's/\r//g' | sed ':a;N;$!ba;s/\n/%0A/g')
+          echo "::error title=Build failed::${msg}"
+
+      # Publishes the APK so it can be downloaded directly on the phone:
       # https://github.com/<owner>/<repo>/releases/latest/download/ThoughtBank.apk
       - uses: softprops/action-gh-release@v2
         with:

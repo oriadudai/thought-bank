@@ -11,4 +11,8 @@ final class Formats {
     static String dateTime(long millis) {
         return new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date(millis));
     }
+
+    static String time(long millis) {
+        return new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(millis));
+    }
 }

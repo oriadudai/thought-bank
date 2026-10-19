@@ -17,8 +17,19 @@ public class BootReceiver extends BroadcastReceiver {
     }
 
     static void rescheduleAll(Context ctx) {
-        for (Thought t : ThoughtDb.get(ctx).getUpcoming(System.currentTimeMillis())) {
+        long now = System.currentTimeMillis();
+        ThoughtDb db = ThoughtDb.get(ctx);
+        for (Thought t : db.getUpcoming(now)) {
             ReminderScheduler.schedule(ctx, t);
         }
+        // Repeating reminders whose time passed while the phone was off: move to the next occurrence
+        for (Thought t : db.getAll(null, -1)) {
+            if (t.repeat != Recurrence.NONE && t.remindAt > 0 && t.remindAt <= now) {
+                t.remindAt = Recurrence.first(t.remindAt, t.repeat, t.repeatDays, now);
+                db.update(t);
+                ReminderScheduler.schedule(ctx, t);
+            }
+        }
+        InsightStream.ensureScheduled(ctx);
     }
 }

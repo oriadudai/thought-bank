@@ -7,4 +7,7 @@
     <color name="accent">#8B85FF</color>
     <color name="primary">#1E1E24</color>
     <color name="primary_dark">#121216</color>
+    <color name="chip_stroke">#3A3A44</color>
+    <color name="cat_insight">#A78BFA</color>
+    <color name="cat_idea">#34D399</color>
 </resources>

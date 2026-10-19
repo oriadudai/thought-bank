@@ -13,7 +13,8 @@
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/bg_search"
             android:hint="@string/search_hint"
             android:imeOptions="actionSearch"
@@ -24,6 +25,29 @@
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_secondary"
             android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="10dp">
+
+            <TextView
+                android:id="@+id/tab_all"
+                style="@style/Chip"
+                android:text="@string/tab_all" />
+
+            <TextView
+                android:id="@+id/tab_insights"
+                style="@style/Chip"
+                android:text="@string/tab_insights" />
+
+            <TextView
+                android:id="@+id/tab_ideas"
+                style="@style/Chip"
+                android:text="@string/tab_ideas" />
+        </LinearLayout>
 
         <ListView
             android:id="@+id/list"

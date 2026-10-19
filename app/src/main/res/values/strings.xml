@@ -2,34 +2,77 @@
 <resources>
     <string name="app_name">בנק מחשבות</string>
 
+    <!-- Main screen -->
     <string name="search_hint">חיפוש במחשבות…</string>
-    <string name="empty_list">עוד אין כאן מחשבות.\nלחץ על + כדי להוסיף את הראשונה.</string>
-    <string name="add_desc">הוסף מחשבה</string>
+    <string name="empty_list">עוד אין כאן מחשבות.\nלחצי על + כדי להוסיף.</string>
+    <string name="add_desc">הוספת מחשבה</string>
+    <string name="tab_all">הכל</string>
+    <string name="tab_insights">תובנות</string>
+    <string name="tab_ideas">רעיונות</string>
     <string name="item_reminder_upcoming">🔔 %1$s</string>
     <string name="item_reminder_done">✓ הוזכר %1$s</string>
+    <string name="done_desc">בוצע</string>
+    <string name="pinned_toast">📌 נעוץ בראש הרשימה</string>
+    <string name="unpinned_toast">הנעיצה בוטלה</string>
 
+    <!-- Edit screen -->
     <string name="new_thought">מחשבה חדשה</string>
     <string name="edit_thought">מחשבה</string>
     <string name="thought_hint">מה עובר לך בראש?</string>
+    <string name="cat_insight">💭 תובנה</string>
+    <string name="cat_idea">💡 רעיון</string>
+    <string name="pin">📌 נעיצה</string>
+    <string name="unpin">📌 ביטול נעיצה</string>
 
     <string name="reminder_none">ללא תזכורת</string>
     <string name="reminder_at">🔔 תזכורת: %1$s</string>
     <string name="reminder_passed">התזכורת כבר הייתה (%1$s)</string>
+    <string name="reminder_repeat">🔁 %1$s\nהתזכורת הבאה: %2$s</string>
     <string name="in_hour">בעוד שעה</string>
     <string name="tonight">הערב 20:00</string>
     <string name="tomorrow_morning">מחר 09:00</string>
-    <string name="pick_time">בחר תאריך ושעה</string>
-    <string name="clear_reminder">הסר תזכורת</string>
+    <string name="pick_time">בחירת זמן</string>
+    <string name="clear_reminder">הסרה</string>
 
-    <string name="save">שמור</string>
-    <string name="delete">מחק</string>
+    <string name="repeat_title">תדירות</string>
+    <string name="repeat_button">חזרה: %1$s</string>
+    <string-array name="repeat_options">
+        <item>ללא</item>
+        <item>כל יום</item>
+        <item>כל שבוע</item>
+        <item>כל חודש</item>
+    </string-array>
+    <string name="pick_days">באילו ימים?</string>
+    <string name="no_days">צריך לבחור לפחות יום אחד</string>
+    <string name="repeat_daily">כל יום ב-%1$s</string>
+    <string name="repeat_weekly">כל שבוע (%1$s) ב-%2$s</string>
+    <string name="repeat_monthly">כל חודש ב-%1$d לחודש, ב-%2$s</string>
+
+    <string name="save">שמירה</string>
+    <string name="delete">מחיקה</string>
     <string name="cancel">ביטול</string>
+    <string name="ok">אישור</string>
     <string name="delete_confirm">למחוק את המחשבה?</string>
     <string name="empty_thought">המחשבה ריקה</string>
-    <string name="time_passed">הזמן שבחרת כבר עבר</string>
+    <string name="time_passed">הזמן שנבחר כבר עבר</string>
     <string name="saved">נשמר</string>
     <string name="exact_alarm_off">התזכורת נשמרה, אבל ייתכן שתגיע באיחור קל (תזכורות מדויקות כבויות בהגדרות)</string>
 
+    <!-- Notifications -->
     <string name="channel_name">תזכורות</string>
-    <string name="notification_title">תזכורת מבנק המחשבות</string>
+    <string name="notif_title_insight">🔔 תזכורת: תובנה</string>
+    <string name="notif_title_idea">🔔 תזכורת: רעיון</string>
+    <string name="insight_notif_title">💭 תובנה מהבנק</string>
+    <string name="snooze_hour">עוד שעה</string>
+    <string name="stop_repeat">עצירת התזכורת</string>
+
+    <!-- Random insights -->
+    <string name="menu_stream">תובנות אקראיות</string>
+    <string name="stream_title">תובנות אקראיות</string>
+    <string name="stream_explain">במהלך היום תגיע התראה עם תובנה מהבנק. המרווח בין ההתראות משתנה באקראי, וכל התובנות חוזרות בתורן.</string>
+    <string name="stream_enabled">פעיל</string>
+    <string name="stream_from">משעה</string>
+    <string name="stream_to">עד שעה</string>
+    <string name="stream_avg">בערך כל (שעות)</string>
+    <string name="stream_bad_range">שעת הסיום צריכה להיות אחרי שעת ההתחלה</string>
 </resources>
